@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Productos</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="icon" href="icon/logo_codo.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div><button id="bdark">Modo Oscuro</button></div>
+    </header>
+
+    <h1>Listado de Productos</h1>
+    <div class="img"><img src="img/logo_codo.png" alt="codoacodo" width="100px"></div>
+    <h3>Codo a Codo 2023</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th align="right">Precio</th>
+            </tr>
+        </thead>
+        <tbody id="tablaProductos">
+        </tbody>
+    </table>
+
+    <div class="contenedor-centrado">
+        <a href="index.html">Menu principal</a>
+    </div>
+
+    <script>
+//El objetivo principal es obtener los datos de los productos desde la API y mostrarlos en la tabla dentro del documento HTML.
+// El código JavaScript se encarga de obtener los productos desde la API, parsear los datos recibidos, y luego crear y agregar filas a la tabla en el documento HTML para mostrar los productos al usuario. La manipulación del DOM se realiza utilizando métodos y propiedades proporcionados por el navegador, como createElement, innerHTML y appendChild.
+
+        //const URL = "http://127.0.0.1:5000/"
+        const URL = "https://daicon.pythonanywhere.com/"
+
+         // Realizamos la solicitud GET al servidor para obtener todos los productos
+      fetch(URL + 'productos')
+            .then(function (response){
+                if (response.ok){
+                    return response.json() //parseamos la respuesta del json
+                } else {
+                    throw new Error('Error al obtener los productos.')
+                }
+            })
+            .then(function (data) {
+                var tablaProductos = document.getElementById('tablaProductos')
+
+            // Iteramos sobre los productos y agregamos filas a la tabla    
+                data.forEach(function (producto){
+                    var fila = document.createElement('tr')
+                    fila.innerHTML = '<td>' + producto.codigo + '</td>' + '<td>' + producto.descripcion + '</td>' + '<td align="right">' + producto.cantidad + '</td>' + '<td align="right">&nbsp; &nbsp;&nbsp; &nbsp;' + producto.precio + '</td>'
+                    tablaProductos.appendChild(fila)       
+                })
+
+            })
+            .catch(function(error){
+                console.log('Error: ', error)
+                alert('Error al obtener los productos')
+
+            })
+
+ // Botón Modo Oscuro
+ const bdark = document.querySelector('#bdark');
+        const body = document.querySelector('body');
+
+        load();
+
+        bdark.addEventListener('click', e =>{ 
+            body.classList.toggle('darkmode');
+            store(body.classList.contains('darkmode'));
+        });
+
+        //Almaceno el estado en local storage
+        function load(){
+            const darkmode = localStorage.getItem('darkmode');
+            
+            if(!darkmode){
+                store('false');
+            } else if(darkmode == 'true'){
+                body.classList.add('darkmode');
+            }
+        }
+
+        function store(value){
+            localStorage.setItem('darmode', value);
+        }
+
+
+    </script>
+</body>
+</html>
